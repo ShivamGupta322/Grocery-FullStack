@@ -82,6 +82,10 @@ const Product=mongoose.model("Product",{
         type:Boolean,
         default:true,
     },
+    description:{
+        type:String,
+        required:true,
+    }
 
 })
 
@@ -104,6 +108,7 @@ app.post("/addproduct", async (req, res) => {
        category:req.body.category,
        new_price:req.body.new_price,
        old_price:req.body.old_price, 
+       description:req.body.description,
     });
     console.log(product);
     await product.save();
@@ -126,7 +131,7 @@ app.post('/removeproduct', async(req,res)=>{
     })
 })
 
-// creating API for getting al product
+// creating API for getting all product
 app.get('/allproducts',async (req,res)=>{
     let products= await Product.find({});
     console.log("All Products Fetched");
@@ -273,6 +278,57 @@ app.post('/getcart',fetchUser,async (req,res)=>{
     let userData = await Users.findOne({_id:req.user.id});
     res.json(userData.cartData);
 })
+
+
+//API to store Reviews
+// Review Schema
+const Review = mongoose.model('Review', {
+    productId: {
+        type: Number,
+        required: true,
+    },
+    userName: {
+        type: String,
+        required: true,
+    },
+    rating: {
+        type: Number,
+        required: true,
+    },
+    comment: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
+    }
+});
+
+
+// API to submit a new review
+app.post('/addreview', async (req, res) => {
+    const review = new Review({
+        productId: req.body.productId,
+        userName: req.body.userName,
+        rating: req.body.rating,
+        comment: req.body.comment,
+    });
+    await review.save();
+    console.log("Review Added");
+    res.json({ success: true, message: 'Review added successfully' });
+});
+
+// API to get reviews for a specific product
+app.get('/reviews/:productId', async (req, res) => {
+    const reviews = await Review.find({ productId: req.params.productId });
+    res.send(reviews);
+});
+
+
+
+
+
 
 
 //api creation
