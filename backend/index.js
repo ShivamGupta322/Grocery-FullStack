@@ -8,6 +8,8 @@ const path = require('path');
 const cors = require('cors');
 const { log } = require('console');
 
+
+
 app.use(express.json());
 app.use(cors());    //to connect from react frontend
 
@@ -252,6 +254,41 @@ const fetchUser = async (req,res,next)=>{
 }
 
 
+//get user for profile
+app.post('/getuser', fetchUser, async (req, res) => {
+    try {
+        const user = await Users.findById(req.user.id).select('-password'); // Exclude password
+        res.json(user);
+    } catch (error) {
+        res.status(500).send('Server Error');
+    }
+});
+
+
+
+// API for updating user profile
+app.put('/updateuser', fetchUser, async (req, res) => {
+    const { name, email, address } = req.body; // Add any other fields you want to update
+    try {
+        const updatedUser = await Users.findOneAndUpdate(
+            { _id: req.user.id },
+            { name, email, address }, // Update the fields you want to modify
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error updating user', error });
+    }
+});
+
+
+
+
 //Creating API for adding porducts in cart data in db
 app.post('/addtocart', fetchUser, async (req,res)=>{
     // console.log(req.body,req.user);
@@ -328,6 +365,27 @@ app.get('/reviews/:productId', async (req, res) => {
 
 
 
+
+  // API for updating a product
+app.put('/updateproduct', async (req, res) => {
+    const { id, name, old_price, new_price } = req.body;
+    try {
+        // Find and update the product
+        const updatedProduct = await Product.findOneAndUpdate(
+            { id: id },
+            { name, old_price, new_price },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        res.status(200).json({ success: true, product: updatedProduct });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error updating product', error });
+    }
+});
 
 
 
