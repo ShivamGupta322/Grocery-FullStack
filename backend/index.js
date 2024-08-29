@@ -156,6 +156,9 @@ const Users = mongoose.model('Users',{
     cartData:{
         type:Object,
     },
+    address:{
+        type:String,
+    },
     date:{
         type:Date,
         default:Date.now,
