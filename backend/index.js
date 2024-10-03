@@ -17,11 +17,11 @@ app.use(cors());    //to connect from react frontend
 //DB connection with mongo DB
 
 // const connectDB = async ()=>{
-//     await mongoose.connect('mongodb+srv://guptashivamsg02:1122334455@cluster0.nnqetgf.mongodb.net/MERN PROJECT').then(()=>console.log("DB connected"));
+//     await mongoose.connect('').then(()=>console.log("DB connected"));
 // }
 
 // connectDB();
-mongoose.connect('mongodb+srv://guptashivamsg02:1122334455@cluster0.nnqetgf.mongodb.net/GrocerEase').then(()=>console.log("DB connected"));
+mongoose.connect('').then(()=>console.log("DB connected"));
 //API Creation
 
 app.get("/",(req,res)=>{
